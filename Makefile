@@ -25,6 +25,9 @@ HEADER = ft_ssl.h
 LIB = libft/libft.a
 
 SOURCES =	main.c \
+			md5.c \
+			errors.c \
+			sha256.c \
 
 SRCS = $(addprefix $(DIR_S)/,$(SOURCES))
 
