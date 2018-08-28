@@ -33,4 +33,5 @@ void	wrong_argument(t_ssl_func handler[], char **argv, int i)
 	while (++i < FUNCTIONS && ft_strequ(handler[i].type, "cc"))
 		ft_printf("%s\n", handler[i].func);
 	ft_printf("\n");
+	exit(-1);
 }

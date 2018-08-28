@@ -12,8 +12,8 @@
 
 #include "ft_ssl.h"
 
-void		sha256(int argc, char **argv)
+void		sha256(int argc, char **argv, int i)
 {
-	if (argc && argv) {}
+	if (argc && argv && i) {}
 	ft_printf("hi! 256\n");
 }

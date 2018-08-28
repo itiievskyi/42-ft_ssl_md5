@@ -26,8 +26,11 @@ LIB = libft/libft.a
 
 SOURCES =	main.c \
 			md5.c \
-			errors.c \
+			md5_read.c \
+			md5_errors.c \
 			sha256.c \
+			errors.c \
+			utils.c \
 
 SRCS = $(addprefix $(DIR_S)/,$(SOURCES))
 
