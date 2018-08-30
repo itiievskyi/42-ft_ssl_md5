@@ -14,6 +14,8 @@
 
 void		md5_encrypt(char *str, t_flags *flags)
 {
-	if (str && flags) {}
-	ft_printf("AAAAAAAA!\n");
+	if (!str || !flags)
+		return ;
+	ft_printf("%s\n", str);
+//	(!flags->s) ? free(str) : 0;
 }
