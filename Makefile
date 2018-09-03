@@ -20,7 +20,7 @@ DIR_S = ./
 
 DIR_O = obj
 
-HEADER = ft_ssl.h
+HEADER =	ft_ssl.h
 
 LIB = libft/libft.a
 

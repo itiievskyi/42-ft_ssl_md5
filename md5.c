@@ -11,6 +11,7 @@
 /* ************************************************************************** */
 
 #include "ft_ssl.h"
+#include "md5.h"
 
 void		md5_encrypt(char *str, t_flags *flags)
 {
@@ -34,13 +35,10 @@ void		md5_encrypt(char *str, t_flags *flags)
 		input[i] = 0;
 	while (++i - 1 < len / 8 && (++j > -1))
 		input[len / 8 - j - 1] = (str_len * 8 >> (j * 8)) % 256;
-	ft_printf("%s\n", str);
-
-	//	(!flags->s) ? free(str) : 0;
 
 	/* CHECKING */
 
-
+	ft_printf("%s\n", str);
 	int y;
 	size_t z = -1;
 	while (++z < len / 8) {
