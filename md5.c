@@ -14,8 +14,14 @@
 
 void		md5_encrypt(char *str, t_flags *flags)
 {
+	size_t			len;
+	unsigned char	*input;
+
 	if (!str || !flags)
 		return ;
+	len = 512 - (ft_strlen(str) * 8) / 448 + ft_strlen(str) * 8;
+	input = (unsigned char*)malloc(sizeof(unsigned char) * len / 8 + 1);
+	input[len / 8] = '\0';
 	ft_printf("%s\n", str);
 //	(!flags->s) ? free(str) : 0;
 }
