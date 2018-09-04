@@ -11,6 +11,7 @@
 /* ************************************************************************** */
 
 #include "ft_ssl.h"
+#include "md5.h"
 
 char		*read_file(char *arg, int fd, int length)
 {
@@ -88,7 +89,8 @@ void		parse_targets(int argc, char **argv, int i, t_flags *flags)
 
 void		md5(int argc, char **argv, int i)
 {
-	t_flags		*flags;
+	t_flags			*flags;
+//	unsigned char	*input;
 
 	flags = (t_flags*)malloc(sizeof(t_flags));
 	flags->nomore = 0;

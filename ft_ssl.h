@@ -52,8 +52,4 @@ void				md5(int argc, char **argv, int i);
 void				sha256(int argc, char **argv, int i);
 void				wrong_argument(t_ssl_func handler[], char **argv, int i);
 void				usage(void);
-void				flags_init(t_flags *flags);
-void				md5_s_error(t_flags *flags);
-void				md5_err_flag(char ch, t_flags *flags);
-void				md5_encrypt(char *str, t_flags *flags);
 #endif

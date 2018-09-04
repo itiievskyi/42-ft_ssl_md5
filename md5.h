@@ -13,7 +13,27 @@
 #ifndef MD5_H
 # define MD5_H
 
-static unsigned long long	g_words[64] =
+#define RL(x, c) (((x) << (c)) | ((x) >> (32 - (c))))
+
+# define F(x, y, z) ((x & y) | (~x & z))
+# define G(x, y, z) ((x & z) | (y & ~z))
+# define H(x, y, z) (x ^ y ^ z)
+# define I(x, y, z) (y ^ (x | ~z))
+
+# define FF(a, b, c, d, x, s, w) { a += F(b, c, d) + x + w; a = b + RL(a, s); }
+# define GG(a, b, c, d, x, s, w) { a += G(b, c, d) + x + w; a = b + RL(a, s); }
+# define HH(a, b, c, d, x, s, w) { a += H(b, c, d) + x + w; a = b + RL(a, s); }
+# define II(a, b, c, d, x, s, w) { a += I(b, c, d) + x + w; a = b + RL(a, s); }
+
+typedef struct				s_md5_ctx
+{
+	uint32_t				state[4];
+	uint32_t				count[2];
+	unsigned char			buffer[64];
+	unsigned char			digest[16];
+}							t_md5_ctx;
+
+static uint32_t	g_words[64] =
 {
 	0xd76aa478, 0xe8c7b756, 0x242070db, 0xc1bdceee,
 	0xf57c0faf, 0x4787c62a, 0xa8304613, 0xfd469501,
@@ -33,7 +53,7 @@ static unsigned long long	g_words[64] =
 	0xf7537e82, 0xbd3af235, 0x2ad7d2bb, 0xeb86d391
 };
 
-static unsigned long long	g_x[64] =
+static uint32_t	g_x[64] =
 {
 	0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15,
 	1, 6, 11, 0, 5, 10, 15, 4, 9, 14, 3, 8, 13, 2, 7, 12,
@@ -41,9 +61,18 @@ static unsigned long long	g_x[64] =
 	0, 7, 14, 5, 12, 3, 10, 1, 8, 15, 6, 13, 4, 11, 2, 9
 };
 
-static unsigned long long	g_box_last[16] =
-{
-	7, 12, 17, 22, 5, 9, 14, 20, 4, 11, 16, 23, 6, 10, 15, 21
+static uint32_t	g_s[64] =
+{	7, 12, 17, 22, 7, 12, 17, 22, 7, 12, 17, 22, 7, 12, 17, 22,
+	5,  9, 14, 20, 5,  9, 14, 20, 5,  9, 14, 20, 5,  9, 14, 20,
+	4, 11, 16, 23, 4, 11, 16, 23, 4, 11, 16, 23, 4, 11, 16, 23,
+	6, 10, 15, 21, 6, 10, 15, 21, 6, 10, 15, 21, 6, 10, 15, 21
 };
+
+void						flags_init(t_flags *flags);
+void						md5_s_error(t_flags *flags);
+void						md5_err_flag(char ch, t_flags *flags);
+void						md5_encrypt(char *str, t_flags *flags);
+void						parse_targets(int argc, char **argv, int i,
+							t_flags *flags);
 
 #endif
