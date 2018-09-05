@@ -13,10 +13,13 @@
 #include "ft_ssl.h"
 #include "md5.h"
 
-void		md5_print(t_md5_ctx *ctx)
+void		md5_print(char *str, t_flags *flags, t_md5_ctx *ctx)
 {
 	uint8_t		*p;
 
+	if (!flags->q && !flags->r)
+		ft_printf("MD5 (%c%s%c) = ", (flags->s ? '\"' : 0),
+		(flags->s ? str : ctx->file), (flags->s ? '\"' : 0));
 	p = (uint8_t *)&ctx->state[0];
 	ft_printf("%2.2x%2.2x%2.2x%2.2x", p[0], p[1], p[2], p[3]);
 	p = (uint8_t *)&ctx->state[1];
@@ -25,7 +28,10 @@ void		md5_print(t_md5_ctx *ctx)
 	ft_printf("%2.2x%2.2x%2.2x%2.2x", p[0], p[1], p[2], p[3]);
 	p = (uint8_t *)&ctx->state[3];
 	ft_printf("%2.2x%2.2x%2.2x%2.2x", p[0], p[1], p[2], p[3]);
-	ft_printf("\n");
+	((!flags->q && !flags->r) || flags->q) ? ft_printf("\n") : 0;
+	if (!flags->q && flags->r)
+		ft_printf(" %c%s%c\n", (flags->s ? '\"' : 0),
+		(flags->s ? str : ctx->file), (flags->s ? '\"' : 0));
 }
 
 void		md5_abcd_assign(t_md5_ctx *ctx, char order)
@@ -113,7 +119,7 @@ void		md5_encrypt(char *str, t_flags *flags, t_md5_ctx *ctx)
 	while (++i - 1 < len + 8 && (++j > -1))
 		input[len + j] = (ctx->len * 8 >> (j * 8)) % 256;
 	md5_process(input, len, ctx);
-	md5_print(ctx);
+	md5_print(str, flags, ctx);
 }
 
 

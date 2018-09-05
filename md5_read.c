@@ -31,12 +31,11 @@ char		*read_file(char *arg, int fd, int length, t_md5_ctx *ctx)
 		close(fd);
 		fd = open(arg, O_RDONLY);
 		while (read(fd, &ch, 1) > 0)
-		{
 			str[i++] = ch;
-		}
 		str[i] = '\0';
+		ctx->len = i;
+		ctx->file = arg;
 	}
-	ctx->len = i;
 	return (str);
 }
 
