@@ -20,12 +20,13 @@
 # define FUNCTIONS 2
 # define FUNC_NAME 7
 # define FLAGS "pqrs"
+# define MAX 9223372036854775807
 
 typedef struct		s_ssl_func
 {
 	char			func[FUNC_NAME];
 	char			type[3];
-	void			(*handler)(int, char**, int);
+	void			(*handler)(int, char**);
 }					t_ssl_func;
 
 typedef struct		s_file
@@ -48,8 +49,8 @@ typedef struct		s_flags
 	int				s;
 }					t_flags;
 
-void				md5(int argc, char **argv, int i);
-void				sha256(int argc, char **argv, int i);
+void				md5(int argc, char **argv);
+void				sha256(int argc, char **argv);
 void				wrong_argument(t_ssl_func handler[], char **argv, int i);
 void				usage(void);
 #endif

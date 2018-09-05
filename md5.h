@@ -29,8 +29,12 @@ typedef struct				s_md5_ctx
 {
 	uint32_t				state[4];
 	uint32_t				count[2];
-	unsigned char			buffer[64];
-	unsigned char			digest[16];
+	uint32_t				a;
+	uint32_t				b;
+	uint32_t				c;
+	uint32_t				d;
+	size_t					len;
+	int						argc;
 }							t_md5_ctx;
 
 static uint32_t	g_words[64] =
@@ -71,8 +75,9 @@ static uint32_t	g_s[64] =
 void						flags_init(t_flags *flags);
 void						md5_s_error(t_flags *flags);
 void						md5_err_flag(char ch, t_flags *flags);
-void						md5_encrypt(char *str, t_flags *flags);
-void						parse_targets(int argc, char **argv, int i,
-							t_flags *flags);
+void						md5_encrypt(char *str, t_flags *flags,
+							t_md5_ctx *ctx);
+void						parse_targets(int argc, char **argv,
+							t_flags *flags, t_md5_ctx *ctx);
 
 #endif

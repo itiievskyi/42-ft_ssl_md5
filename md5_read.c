@@ -13,7 +13,7 @@
 #include "ft_ssl.h"
 #include "md5.h"
 
-char		*read_file(char *arg, int fd, int length)
+char		*read_file(char *arg, int fd, int length, t_md5_ctx *ctx)
 {
 	char	*str;
 	char	ch;
@@ -36,6 +36,7 @@ char		*read_file(char *arg, int fd, int length)
 		}
 		str[i] = '\0';
 	}
+	ctx->len = i;
 	return (str);
 }
 
@@ -46,51 +47,60 @@ char		*read_stdin(void)
 	return (str);
 }
 
-void		parse_targets(int argc, char **argv, int i, t_flags *flags)
+int			md5_choose_target(char **argv, t_flags *flags, int i,
+			t_md5_ctx *ctx)
 {
 	int		j;
 
+	j = 0;
+	while (argv[i][++j])
+	{
+		!ft_strchr(FLAGS, argv[i][j]) ? md5_err_flag(argv[i][j], flags) : 0;
+		argv[i][j] == 'q' ? flags->q = 1 : 0;
+		(argv[i][j] == 'r' && !flags->q) ? flags->r = 1 : 0;
+		if (argv[i][j] == 's' && (flags->s = 1) && argv[i][j + 1]
+		&& (ctx->len = ft_strlen(&argv[i][j + 1])) < MAX)
+		{
+			md5_encrypt(&argv[i][j + 1], flags, ctx);
+			return (i);
+		}
+		else if (argv[i][j] == 's' && i + 1 >= ctx->argc)
+			md5_s_error(flags);
+		else if (argv[i][j] == 's' && (ctx->len = ft_strlen(argv[i + 1])) < MAX)
+		{
+			md5_encrypt(argv[i + 1], flags, ctx);
+			return (i + 1);
+		}
+		else if (argv[i][j] == 'p')
+			md5_encrypt(read_stdin(), flags, ctx);
+	}
+	return (i);
+}
+
+void		parse_targets(int argc, char **argv, t_flags *flags, t_md5_ctx *ctx)
+{
+	int		j;
+	int		i;
+
+	i = 1;
 	while (++i < argc && ((j = 0) == 0) && !flags->nomore)
 	{
 		flags_init(flags);
 		if (argv[i][j] == '-' && !flags->nomore)
-		{
-			while (argv[i][++j])
-			{
-				!ft_strchr(FLAGS, argv[i][j]) ?
-					md5_err_flag(argv[i][j], flags) : 0;
-				argv[i][j] == 'q' ? flags->q = 1 : 0;
-				(argv[i][j] == 'r' && !flags->q) ? flags->r = 1 : 0;
-				if (argv[i][j] == 's' && (flags->s = 1) && argv[i][j + 1])
-				{
-					md5_encrypt(&argv[i][j + 1], flags);
-					break ;
-				}
-				else if (argv[i][j] == 's' && i + 1 >= argc)
-					md5_s_error(flags);
-				else if (argv[i][j] == 's')
-				{
-					md5_encrypt(argv[i + 1], flags);
-					i++;
-					break ;
-				}
-				else if (argv[i][j] == 'p')
-					md5_encrypt(read_stdin(), flags);
-			}
-		}
+			i = md5_choose_target(argv, flags, i, ctx);
 		else
 			flags->nomore = 1;
 	}
 	i = (flags->s ? i - 1 : i - 2);
 	flags_init(flags);
 	while (++i < argc && i > 1)
-		md5_encrypt(read_file(argv[i], 0, i), flags);
+		md5_encrypt(read_file(argv[i], 0, i, ctx), flags, ctx);
 }
 
-void		md5(int argc, char **argv, int i)
+void		md5(int argc, char **argv)
 {
 	t_flags			*flags;
-//	unsigned char	*input;
+	t_md5_ctx		ctx;
 
 	flags = (t_flags*)malloc(sizeof(t_flags));
 	flags->nomore = 0;
@@ -98,5 +108,6 @@ void		md5(int argc, char **argv, int i)
 	flags->q = 0;
 	flags->r = 0;
 	flags->s = 0;
-	parse_targets(argc, argv, i, flags);
+	ctx.argc = argc;
+	parse_targets(argc, argv, flags, &ctx);
 }

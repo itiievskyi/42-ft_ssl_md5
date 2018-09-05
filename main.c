@@ -36,7 +36,7 @@ void	parse_handler(int argc, char **argv)
 	{
 		if (ft_strequ(argv[1], handler[i].func))
 		{
-			handler[i].handler(argc, argv, 1);
+			handler[i].handler(argc, argv);
 			no_error = true;
 		}
 		i++;
