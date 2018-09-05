@@ -14,12 +14,12 @@
 
 void		flags_init(t_flags *flags)
 {
-	flags->p = 0;
 	if (flags->q != 1)
 		flags->q = 0;
 	if (flags->r != 1)
 		flags->r = 0;
 	flags->s = 0;
+	flags->p = 0;
 }
 
 void		file_init(t_file *file, t_flags *flags)

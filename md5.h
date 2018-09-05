@@ -29,7 +29,6 @@ typedef struct				s_md5_ctx
 {
 	char					*file;
 	uint32_t				state[4];
-	uint32_t				count[2];
 	uint32_t				a;
 	uint32_t				b;
 	uint32_t				c;

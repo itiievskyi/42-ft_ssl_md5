@@ -21,6 +21,7 @@
 # define FUNC_NAME 7
 # define FLAGS "pqrs"
 # define MAX 9223372036854775807
+# define BUF 1000
 
 typedef struct		s_ssl_func
 {
@@ -47,6 +48,7 @@ typedef struct		s_flags
 	int				q;
 	int				r;
 	int				s;
+	int				stdin;
 }					t_flags;
 
 void				md5(int argc, char **argv);

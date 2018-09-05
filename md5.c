@@ -17,7 +17,7 @@ void		md5_print(char *str, t_flags *flags, t_md5_ctx *ctx)
 {
 	uint8_t		*p;
 
-	if (!flags->q && !flags->r)
+	if (!flags->q && !flags->r && !flags->p)
 		ft_printf("MD5 (%c%s%c) = ", (flags->s ? '\"' : 0),
 		(flags->s ? str : ctx->file), (flags->s ? '\"' : 0));
 	p = (uint8_t *)&ctx->state[0];
@@ -28,8 +28,8 @@ void		md5_print(char *str, t_flags *flags, t_md5_ctx *ctx)
 	ft_printf("%2.2x%2.2x%2.2x%2.2x", p[0], p[1], p[2], p[3]);
 	p = (uint8_t *)&ctx->state[3];
 	ft_printf("%2.2x%2.2x%2.2x%2.2x", p[0], p[1], p[2], p[3]);
-	((!flags->q && !flags->r) || flags->q) ? ft_printf("\n") : 0;
-	if (!flags->q && flags->r)
+	((!flags->q && !flags->r) || flags->q || flags->p) ? ft_printf("\n") : 0;
+	if (!flags->q && flags->r && !flags->p)
 		ft_printf(" %c%s%c\n", (flags->s ? '\"' : 0),
 		(flags->s ? str : ctx->file), (flags->s ? '\"' : 0));
 }
@@ -84,8 +84,6 @@ void		md5_process(unsigned char *input, int len, t_md5_ctx *ctx)
 	int			offset;
 
 	offset = 0;
-	ctx->count[0] = 0;
-	ctx->count[1] = 0;
 	ctx->state[0] = 0x67452301;
 	ctx->state[1] = 0xefcdab89;
 	ctx->state[2] = 0x98badcfe;
@@ -120,9 +118,6 @@ void		md5_encrypt(char *str, t_flags *flags, t_md5_ctx *ctx)
 		input[len + j] = (ctx->len * 8 >> (j * 8)) % 256;
 	md5_process(input, len, ctx);
 	md5_print(str, flags, ctx);
-}
-
-
 
 	/* CHECKING */
 
@@ -137,4 +132,6 @@ void		md5_encrypt(char *str, t_flags *flags, t_md5_ctx *ctx)
 	}
 	ft_printf("\n");
 *///for(int j =0; j < 64; j++) ft_printf("%x ", ((uint8_t *) input)[j]);
-//	ft_printf("\nstr_len = %d bytes, length = %d bits, or %d bytes\n", str_len, len, len / 8);
+//	ft_printf("\nstr_len = %d bytes, length = %d bits, or %d bytes\n", ctx->len, len, len / 8);
+
+}

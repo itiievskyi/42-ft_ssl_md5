@@ -39,10 +39,35 @@ char		*read_file(char *arg, int fd, int length, t_md5_ctx *ctx)
 	return (str);
 }
 
-char		*read_stdin(void)
+char		*read_stdin(t_md5_ctx *ctx, int i, t_flags *flags)
 {
-	char	*str = NULL;
+	char	*buf;
+	char	*temp;
+	char	*str;
+	char	ch;
 
+	str = NULL;
+	buf = ft_strnew(BUF);
+	if (flags->stdin == 1)
+	{
+		while (read(0, &ch, 1) > 0)
+		{
+			if ((i) % BUF == 0 && i > 0)
+			{
+				temp = str;
+				str = ft_strjoin(temp, buf);
+				temp ? free(temp) : 0;
+				buf ? free(buf) : 0;
+				buf = ft_strnew(BUF);
+			}
+			buf[i % BUF] = ch;
+			i++;
+		}
+	}
+	str = ft_strjoin(str, buf);
+	buf ? free(buf) : 0;
+	ft_printf("%s", str);
+	ctx->len = (i <= 0 ? 0 : i);
 	return (str);
 }
 
@@ -70,8 +95,11 @@ int			md5_choose_target(char **argv, t_flags *flags, int i,
 			md5_encrypt(argv[i + 1], flags, ctx);
 			return (i + 1);
 		}
-		else if (argv[i][j] == 'p')
-			md5_encrypt(read_stdin(), flags, ctx);
+		else if (argv[i][j] == 'p' && ++(flags->p) && ++(flags->stdin))
+		{
+			md5_encrypt(read_stdin(ctx, 0, flags), flags, ctx);
+			return (i);
+		}
 	}
 	return (i);
 }
@@ -85,12 +113,13 @@ void		parse_targets(int argc, char **argv, t_flags *flags, t_md5_ctx *ctx)
 	while (++i < argc && ((j = 0) == 0) && !flags->nomore)
 	{
 		flags_init(flags);
-		if (argv[i][j] == '-' && !flags->nomore)
+		if (argv[i][0] == '-' && !flags->nomore)
 			i = md5_choose_target(argv, flags, i, ctx);
 		else
 			flags->nomore = 1;
 	}
-	i = (flags->s ? i - 1 : i - 2);
+	if (!flags->p)
+		i = ((flags->s) ? i - 1 : i - 2);
 	flags_init(flags);
 	while (++i < argc && i > 1)
 		md5_encrypt(read_file(argv[i], 0, i, ctx), flags, ctx);
@@ -107,6 +136,7 @@ void		md5(int argc, char **argv)
 	flags->q = 0;
 	flags->r = 0;
 	flags->s = 0;
+	flags->stdin = 0;
 	ctx.argc = argc;
 	parse_targets(argc, argv, flags, &ctx);
 }
