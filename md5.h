@@ -13,17 +13,7 @@
 #ifndef MD5_H
 # define MD5_H
 
-#define RL(x, c) (((x) << (c)) | ((x) >> (32 - (c))))
-
-# define F(x, y, z) ((x & y) | (~x & z))
-# define G(x, y, z) ((x & z) | (y & ~z))
-# define H(x, y, z) (x ^ y ^ z)
-# define I(x, y, z) (y ^ (x | ~z))
-
-# define FF(a, b, c, d, x, s, w) { a += F(b, c, d) + x + w; a = b + RL(a, s); }
-# define GG(a, b, c, d, x, s, w) { a += G(b, c, d) + x + w; a = b + RL(a, s); }
-# define HH(a, b, c, d, x, s, w) { a += H(b, c, d) + x + w; a = b + RL(a, s); }
-# define II(a, b, c, d, x, s, w) { a += I(b, c, d) + x + w; a = b + RL(a, s); }
+# define RL(x, c) (((x) << (c)) | ((x) >> (32 - (c))))
 
 typedef struct				s_md5_ctx
 {

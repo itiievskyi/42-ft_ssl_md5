@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   md5.c                                              :+:      :+:    :+:   */
+/*   md5_encrypt.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: itiievsk <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2018/08/24 17:16:31 by itiievsk          #+#    #+#             */
-/*   Updated: 2018/08/24 17:16:33 by itiievsk         ###   ########.fr       */
+/*   Created: 2018/09/07 09:26:02 by itiievsk          #+#    #+#             */
+/*   Updated: 2018/09/07 09:26:07 by itiievsk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,18 +16,17 @@
 void		md5_print(char *str, t_flags *flags, t_md5_ctx *ctx)
 {
 	uint8_t		*p;
+	int			i;
 
+	i = -1;
 	if (!flags->q && !flags->r && !flags->p)
 		ft_printf("MD5 (%c%s%c) = ", (flags->s ? '\"' : 0),
 		(flags->s ? str : ctx->file), (flags->s ? '\"' : 0));
-	p = (uint8_t *)&ctx->state[0];
-	ft_printf("%2.2x%2.2x%2.2x%2.2x", p[0], p[1], p[2], p[3]);
-	p = (uint8_t *)&ctx->state[1];
-	ft_printf("%2.2x%2.2x%2.2x%2.2x", p[0], p[1], p[2], p[3]);
-	p = (uint8_t *)&ctx->state[2];
-	ft_printf("%2.2x%2.2x%2.2x%2.2x", p[0], p[1], p[2], p[3]);
-	p = (uint8_t *)&ctx->state[3];
-	ft_printf("%2.2x%2.2x%2.2x%2.2x", p[0], p[1], p[2], p[3]);
+	while (++i < 4)
+	{
+		p = (uint8_t *)&ctx->state[i];
+		ft_printf("%2.2x%2.2x%2.2x%2.2x", p[0], p[1], p[2], p[3]);
+	}
 	((!flags->q && !flags->r) || flags->q || flags->p) ? ft_printf("\n") : 0;
 	if (!flags->q && flags->r && !flags->p)
 		ft_printf(" %c%s%c\n", (flags->s ? '\"' : 0),
@@ -124,7 +123,7 @@ void		md5_encrypt(char *str, t_flags *flags, t_md5_ctx *ctx)
 //	ft_printf("%s\n", str);
 /*	int y;
 	size_t z = -1;
-	while (++z < len / 8) {
+	while (++z < len + 8) {
 		for (y = 0; y < 8; y++) {
 			ft_printf("%d", !!((input[z] << y) & 0x80));
 		}
