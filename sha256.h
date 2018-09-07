@@ -14,7 +14,6 @@
 # define MD5_H
 
 # define RR(a,b) (((a) >> (b)) | ((a) << (32-(b))))
-
 # define CH(x,y,z) (((x) & (y)) ^ (~(x) & (z)))
 # define MAJ(x,y,z) (((x) & (y)) ^ ((x) & (z)) ^ ((y) & (z)))
 # define E0(x) (RR(x,2) ^ RR(x,13) ^ RR(x,22))
@@ -36,9 +35,10 @@ typedef struct				s_sha256_ctx
 	uint32_t				h;
 	size_t					len;
 	int						argc;
+	int						blocks;
 }							t_sha256_ctx;
 
-static uint32_t	k[64] =
+static uint32_t	g_words[64] =
 {
 	0x428a2f98, 0x71374491, 0xb5c0fbcf, 0xe9b5dba5,
 	0x3956c25b, 0x59f111f1, 0x923f82a4, 0xab1c5ed5,

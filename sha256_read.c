@@ -13,7 +13,6 @@
 #include "ft_ssl.h"
 #include "sha256.h"
 
-
 char		*sha256_read_file(char *arg, int fd, int length, t_sha256_ctx *ctx)
 {
 	char	*str;
