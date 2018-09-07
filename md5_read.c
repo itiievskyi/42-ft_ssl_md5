@@ -21,7 +21,8 @@ char		*md5_read_file(char *arg, int fd, int length, t_md5_ctx *ctx)
 
 	i = 0;
 	str = NULL;
-	if ((fd = open(arg, O_RDONLY)) < 0 || (fd = open(arg, O_WRONLY)) < 0)
+	if ((fd = open(arg, O_RDONLY)) < 0 ||
+	((fd = open(arg, O_WRONLY)) < 0 && errno == EISDIR))
 		ft_printf("ft_ssl: md5: %s: %s\n", arg, strerror(errno));
 	else
 	{
