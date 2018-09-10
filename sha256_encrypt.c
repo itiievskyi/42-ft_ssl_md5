@@ -105,41 +105,27 @@ void		sha256_process(uint32_t **input, t_sha256_ctx *ctx)
 
 void		sha256_encrypt(char *str, t_flags *flags, t_sha256_ctx *ctx)
 {
-	int i, j, m, n;
+	int i;
+	int n;
 	uint64_t len;
 	uint32_t **input;
 
-	for(len = ctx->len * 8 + 1; len % 512!=448; len++);
-	len = len + 64;
-	ctx->blocks = len / 512;
+	i = -1;
+	n = 0;
+	len = ctx->len * 8 + 1;
+	while (len % 512 != 448)
+		len++;
+	ctx->blocks = (len += 64) / 512;
 	input = (uint32_t**)calloc(ctx->blocks, sizeof(uint32_t*));
-
-	for(i=0; i < ctx->blocks; i++)
+	while (++i < ctx->blocks)
 		input[i] = (uint32_t*)calloc(16, sizeof(uint32_t));
-
-	i = j = n = 0;
-	m = 3;
-
-	while(str[n] != '\0')
+	i = 0;
+	while (str[n] != '\0')
 	{
-		input[i][j] |= str[n] << m * 8;
-		n++;
-		if(m > 0)
-			m--;
-		else
-		{
-			m = 3;
-
-			if(j < 16)
-				j++;
-			else
-			{
-				j = 0;
-				i++;
-			}
-		}
+		input[i][n % 16 / 3] |= str[n] << (3 - ((n) % 4)) * 8;
+		((3 - ((++n) % 4)) == 3 && ((n - 1) % 16 / 3 == 0)) ? i++ : 0;
 	}
-	input[i][j] |= 0x80 << m * 8;
+	input[i][(n - 1) % 16 / 3] |= 0x80 << (3 - ((n) % 4)) * 8;
 	input[ctx->blocks-1][14] = (uint32_t)((ctx->len * 8) >> 32);
 	input[ctx->blocks-1][15] = (uint32_t)((ctx->len * 8) & 0xffffffff);
 	sha256_process(input, ctx);
