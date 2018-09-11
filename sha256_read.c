@@ -29,7 +29,7 @@ char		*sha256_read_file(char *arg, int fd, int length, t_sha256_ctx *ctx)
 		while (read(fd, &ch, 1) > 0)
 			length++;
 		str = (char*)malloc(sizeof(char) * i + 1);
-		close(fd);
+//		close(fd);
 		fd = open(arg, O_RDONLY);
 		while (read(fd, &ch, 1) > 0)
 			str[i++] = ch;
@@ -57,8 +57,8 @@ char		*sha256_read_stdin(t_sha256_ctx *ctx, int i, t_flags *flags)
 			{
 				temp = str;
 				str = ft_strjoin(temp, buf);
-				temp ? free(temp) : 0;
-				buf ? free(buf) : 0;
+//				temp ? free(temp) : 0;
+//				buf ? free(buf) : 0;
 				buf = ft_strnew(BUF);
 			}
 			buf[i % BUF] = ch;
@@ -66,7 +66,7 @@ char		*sha256_read_stdin(t_sha256_ctx *ctx, int i, t_flags *flags)
 		}
 	}
 	str = ft_strjoin(str, buf);
-	buf ? free(buf) : 0;
+//	buf ? free(buf) : 0;
 	ft_printf("%s", str);
 	ctx->len = (i <= 0 ? 0 : i);
 	return (str);

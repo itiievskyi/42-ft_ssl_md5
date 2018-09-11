@@ -130,7 +130,7 @@ void		md5_encrypt(char *str, t_flags *flags, t_md5_ctx *ctx)
 		ft_printf(" ");
 	}
 	ft_printf("\n");
-*///for(int j =0; j < 64; j++) ft_printf("%x ", ((uint8_t *) input)[j]);
+*///	for(int j =0; j < 64; j++) ft_printf("%8.8x ", ((uint8_t *) input)[j]);
 //	ft_printf("\nstr_len = %d bytes, length = %d bits, or %d bytes\n", ctx->len, len, len / 8);
 
 }

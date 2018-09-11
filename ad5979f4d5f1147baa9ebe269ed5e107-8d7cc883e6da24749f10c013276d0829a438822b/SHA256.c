@@ -89,7 +89,16 @@ int main(int argc, char *argv[])
 	/* Append length as 64-bit big endian value */
 	bit_array[chunks-1][14] = (uint32_t)(l >> 32);
 	bit_array[chunks-1][15] = (uint32_t)(l & 0xffffffff);
+	size_t z = -1;
+	while (++z < 16) {
+
+		printf("%2x ", (bit_array[chunks-1][z]));
+
+		printf(" ");
+	}
+	printf("\n");
 /*
+
 	int y;
 	size_t z = -1;
 	while (++z < message_length + 8) {

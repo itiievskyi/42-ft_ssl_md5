@@ -22,7 +22,7 @@ void		sha256_print(char *str, t_flags *flags, t_sha256_ctx *ctx)
 		ft_printf("SHA256 (%c%s%c) = ", (flags->s ? '\"' : 0),
 		(flags->s ? str : ctx->file), (flags->s ? '\"' : 0));
 	while (++i < 8)
-		ft_printf("%8x", ctx->state[i]);
+		ft_printf("%8.8x", ctx->state[i]);
 	((!flags->q && !flags->r) || flags->q || flags->p) ? ft_printf("\n") : 0;
 	if (!flags->q && flags->r && !flags->p)
 		ft_printf(" %c%s%c\n", (flags->s ? '\"' : 0),
@@ -69,7 +69,8 @@ void		sha256_transform(uint32_t *input, t_sha256_ctx *ctx)
 	sha256_abcd_assign(ctx, '<');
 	for(i=0; i<64; i++)
 	{
-		t1 = ctx->h + E1(ctx->e) + CH(ctx->e, ctx->f, ctx->g) + g_words[i] + w[i];
+		t1 = ctx->h + E1(ctx->e) + CH(ctx->e, ctx->f, ctx->g)
+			+ g_words[i] + w[i];
 		t2 = E0(ctx->a) + MAJ(ctx->a, ctx->b, ctx->c);
 		ctx->h = ctx->g;
 		ctx->g = ctx->f;
@@ -106,7 +107,7 @@ void		sha256_process(uint32_t **input, t_sha256_ctx *ctx)
 void		sha256_encrypt(char *str, t_flags *flags, t_sha256_ctx *ctx)
 {
 	int i;
-	int n;
+	size_t n;
 	uint64_t len;
 	uint32_t **input;
 
@@ -120,14 +121,26 @@ void		sha256_encrypt(char *str, t_flags *flags, t_sha256_ctx *ctx)
 	while (++i < ctx->blocks)
 		input[i] = (uint32_t*)calloc(16, sizeof(uint32_t));
 	i = 0;
-	while (str[n] != '\0')
+	ft_printf("len = %d\n", ctx->len);
+	while (n < ctx->len)
 	{
-		input[i][n % 16 / 3] |= str[n] << (3 - ((n) % 4)) * 8;
-		((3 - ((++n) % 4)) == 3 && ((n - 1) % 16 / 3 == 0)) ? i++ : 0;
+		ft_printf("str[%d] = %8.8x\n", n, str[n] << (3 - ((n) % 4)) * 8);
+		input[i][n % 64 / 4] |= ((str[n] << (3 - ((n) % 4)) * 8) & (0xffffffff >> (((n) % 4)) * 8));
+		(((++n) % 64)) == 0 ? i++ : 0;
 	}
-	input[i][(n - 1) % 16 / 3] |= 0x80 << (3 - ((n) % 4)) * 8;
-	input[ctx->blocks-1][14] = (uint32_t)((ctx->len * 8) >> 32);
-	input[ctx->blocks-1][15] = (uint32_t)((ctx->len * 8) & 0xffffffff);
+	input[i][(n) % 64 / 4] |= 0x80 << (3 - ((n) % 4)) * 8;
+	input[ctx->blocks - 1][14] = (uint32_t)((ctx->len * 8) >> 32);
+	input[ctx->blocks - 1][15] = (uint32_t)((ctx->len * 8) & 0xffffffff);
+	int y = -1;
+	while (++y < ctx->blocks) {
+		size_t z = -1;
+		while (++z < 16) {
+	//		ft_printf(" <| y = %d, z = %d |> ", y, z);
+			ft_printf("%8.8x ", (input[y][z]));
+		}
+		ft_printf("\n");
+	}
+	ft_printf("\n");
 	sha256_process(input, ctx);
 	sha256_print(str, flags, ctx);
 }
