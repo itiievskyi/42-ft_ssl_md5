@@ -31,6 +31,7 @@ void		md5_print(char *str, t_flags *flags, t_md5_ctx *ctx)
 	if (!flags->q && flags->r && !flags->p)
 		ft_printf(" %c%s%c\n", (flags->s ? '\"' : 0),
 		(flags->s ? str : ctx->file), (flags->s ? '\"' : 0));
+	flags->s ? 0 : free(str);
 }
 
 void		md5_abcd_assign(t_md5_ctx *ctx, char order)
@@ -101,13 +102,16 @@ void		md5_encrypt(char *str, t_flags *flags, t_md5_ctx *ctx)
 	int				j;
 	unsigned char	*input;
 
-	if (!str || !flags)
+	if (!str || !flags || ++(ctx->targets) < 0)
 		return ;
 	i = -1;
 	j = -1;
-	for(len = ctx->len * 8 + 1; len % 512!=448; len++);
+	len = ctx->len * 8 + 1;
+	while (len % 512 != 448)
+		len++;
 	len /= 8;
-	input = (unsigned char*)malloc(sizeof(unsigned char) * (len + 8));
+	if (!(input = (unsigned char*)malloc(sizeof(unsigned char) * (len + 8))))
+		return ;
 	while (++i < ctx->len)
 		input[i] = str[i];
 	input[i] = 128;
@@ -117,20 +121,5 @@ void		md5_encrypt(char *str, t_flags *flags, t_md5_ctx *ctx)
 		input[len + j] = (ctx->len * 8 >> (j * 8)) % 256;
 	md5_process(input, len, ctx);
 	md5_print(str, flags, ctx);
-
-	/* CHECKING */
-
-//	ft_printf("%s\n", str);
-/*	int y;
-	size_t z = -1;
-	while (++z < len + 8) {
-		for (y = 0; y < 8; y++) {
-			ft_printf("%d", !!((input[z] << y) & 0x80));
-		}
-		ft_printf(" ");
-	}
-	ft_printf("\n");
-*///	for(int j =0; j < 64; j++) ft_printf("%8.8x ", ((uint8_t *) input)[j]);
-//	ft_printf("\nstr_len = %d bytes, length = %d bits, or %d bytes\n", ctx->len, len, len / 8);
-
+	free(input);
 }

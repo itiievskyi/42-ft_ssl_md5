@@ -29,7 +29,7 @@ void	parse_handler(int argc, char **argv)
 	static t_ssl_func	handler[FUNCTIONS];
 
 	i = 0;
-	no_error = 0;
+	no_error = false;
 	argc == 1 ? usage() : 0;
 	init_functions(handler);
 	while (i < FUNCTIONS)
@@ -47,5 +47,6 @@ void	parse_handler(int argc, char **argv)
 int		main(int argc, char **argv)
 {
 	parse_handler(argc, argv);
+	system("leaks ft_ssl");
 	return (0);
 }

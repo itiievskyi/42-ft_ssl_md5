@@ -21,7 +21,7 @@
 # define FUNC_NAME 7
 # define FLAGS "pqrs"
 # define MAX 9223372036854775807
-# define BUF 1000
+# define BUF 100000
 
 typedef struct		s_ssl_func
 {

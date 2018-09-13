@@ -21,15 +21,15 @@ char		*sha256_read_file(char *arg, int fd, int length, t_sha256_ctx *ctx)
 
 	i = 0;
 	str = NULL;
-	if ((fd = open(arg, O_RDONLY)) < 0 ||
-	((fd = open(arg, O_WRONLY)) < 0 && errno == EISDIR))
+	if (((fd = open(arg, O_WRONLY)) < 0 && errno == EISDIR) ||
+	(fd = open(arg, O_RDONLY)) < 0)
 		ft_printf("ft_ssl: sha256: %s: %s\n", arg, strerror(errno));
 	else
 	{
 		while (read(fd, &ch, 1) > 0)
 			length++;
-		str = (char*)malloc(sizeof(char) * i + 1);
-//		close(fd);
+		str = (char*)malloc(sizeof(char) * (length + 1));
+		close(fd);
 		fd = open(arg, O_RDONLY);
 		while (read(fd, &ch, 1) > 0)
 			str[i++] = ch;
@@ -57,8 +57,8 @@ char		*sha256_read_stdin(t_sha256_ctx *ctx, int i, t_flags *flags)
 			{
 				temp = str;
 				str = ft_strjoin(temp, buf);
-//				temp ? free(temp) : 0;
-//				buf ? free(buf) : 0;
+				temp ? free(temp) : 0;
+				buf ? free(buf) : 0;
 				buf = ft_strnew(BUF);
 			}
 			buf[i % BUF] = ch;
@@ -66,8 +66,8 @@ char		*sha256_read_stdin(t_sha256_ctx *ctx, int i, t_flags *flags)
 		}
 	}
 	str = ft_strjoin(str, buf);
-//	buf ? free(buf) : 0;
-	ft_printf("%s", str);
+	buf ? free(buf) : 0;
+	flags->p == -2 ? 0 : ft_printf("%s", str);
 	ctx->len = (i <= 0 ? 0 : i);
 	return (str);
 }
@@ -130,8 +130,9 @@ void		sha256_parse_targets(int argc, char **argv, t_flags *flags,
 void		sha256(int argc, char **argv)
 {
 	t_flags			*flags;
-	t_sha256_ctx		ctx;
+	t_sha256_ctx	*ctx;
 
+	ctx = (t_sha256_ctx*)malloc(sizeof(t_sha256_ctx));
 	flags = (t_flags*)malloc(sizeof(t_flags));
 	flags->nomore = 0;
 	flags->p = 0;
@@ -139,6 +140,13 @@ void		sha256(int argc, char **argv)
 	flags->r = 0;
 	flags->s = 0;
 	flags->stdin = 0;
-	ctx.argc = argc;
-	sha256_parse_targets(argc, argv, flags, &ctx);
+	ctx->argc = argc;
+	if (argc == 2)
+	{
+		(flags->p) = -2;
+		++(flags->stdin);
+		sha256_encrypt(sha256_read_stdin(ctx, 0, flags), flags, ctx);
+	}
+	else
+		sha256_parse_targets(argc, argv, flags, ctx);
 }

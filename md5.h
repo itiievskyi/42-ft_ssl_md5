@@ -25,6 +25,7 @@ typedef struct				s_md5_ctx
 	uint32_t				d;
 	size_t					len;
 	int						argc;
+	int						targets;
 }							t_md5_ctx;
 
 static uint32_t	g_words[64] =
@@ -69,5 +70,6 @@ void						md5_encrypt(char *str, t_flags *flags,
 							t_md5_ctx *ctx);
 void						parse_targets(int argc, char **argv,
 							t_flags *flags, t_md5_ctx *ctx);
+void						md5_clean(t_flags *flags);
 
 #endif
