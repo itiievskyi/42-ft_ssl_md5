@@ -40,37 +40,6 @@ char		*md5_read_file(char *arg, int fd, int length, t_md5_ctx *ctx)
 	return (str);
 }
 
-char		*md5_read_stdin(t_md5_ctx *ctx, int i, t_flags *flags)
-{
-	char	*buf;
-	char	*temp;
-	char	*str;
-	char	ch;
-
-	str = NULL;
-	buf = ft_strnew(BUF);
-	if (flags->stdin == 1)
-	{
-		while (read(0, &ch, 1) > 0)
-		{
-			if ((i) % BUF == 0 && i > 0)
-			{
-				temp = str;
-				str = ft_strjoin(temp, buf);
-				temp ? free(temp) : 0;
-				buf ? free(buf) : 0;
-				buf = ft_strnew(BUF);
-			}
-			buf[i++ % BUF] = ch;
-		}
-	}
-	str = ft_strjoin(str, buf);
-	buf ? free(buf) : 0;
-	flags->p == -2 ? 0 : ft_printf("%s", str);
-	ctx->len = (i <= 0 ? 0 : i);
-	return (str);
-}
-
 int			md5_choose_target(char **argv, t_flags *flags, int i,
 			t_md5_ctx *ctx)
 {
@@ -97,7 +66,7 @@ int			md5_choose_target(char **argv, t_flags *flags, int i,
 		}
 		else if (argv[i][j] == 'p' && ++(flags->p) && ++(flags->stdin))
 		{
-			md5_encrypt(md5_read_stdin(ctx, 0, flags), flags, ctx);
+			md5_encrypt(ssl_read_stdin(&ctx->len, 0, flags), flags, ctx);
 			if (argv[i][j + 1] == '\0')
 				return (i);
 			flags_init(flags);
@@ -150,7 +119,7 @@ void		md5(int argc, char **argv)
 		flags_init(flags);
 		(flags->p) = -2;
 		++(flags->stdin);
-		md5_encrypt(md5_read_stdin(&ctx, 0, flags), flags, &ctx);
+		md5_encrypt(ssl_read_stdin(&ctx.len, 0, flags), flags, &ctx);
 	}
 	free(flags);
 }

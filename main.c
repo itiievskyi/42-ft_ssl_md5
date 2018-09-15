@@ -47,6 +47,6 @@ void	parse_handler(int argc, char **argv)
 int		main(int argc, char **argv)
 {
 	parse_handler(argc, argv);
-	system("leaks ft_ssl");
+//	system("leaks ft_ssl");
 	return (0);
 }
