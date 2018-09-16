@@ -17,6 +17,7 @@
 
 typedef struct				s_md5_ctx
 {
+	char					func[10];
 	char					*file;
 	uint32_t				state[4];
 	uint32_t				a;

@@ -12,6 +12,34 @@
 
 #include "ft_ssl.h"
 
+char		*ssl_read_file(char *arg, size_t *length, char f[], char **file)
+{
+	char	*str;
+	char	ch;
+	int		fd;
+	size_t	i;
+
+	str = NULL;
+	i = 0;
+	if (((fd = open(arg, O_WRONLY)) < 0 && errno == EISDIR) ||
+	(fd = open(arg, O_RDONLY)) < 0)
+		ft_printf("ft_ssl: %s: %s: %s\n", f, arg, strerror(errno));
+	else
+	{
+		while (read(fd, &ch, 1) > 0)
+			i++;
+		close(fd);
+		str = (char*)malloc(sizeof(char) * (i + 1));
+		(fd = open(arg, O_RDONLY)) > 0 ? i = 0 : 0;
+		while (read(fd, &ch, 1) > 0)
+			str[i++] = ch;
+		str[i] = '\0';
+		*length = i;
+		*file = arg;
+	}
+	return (str);
+}
+
 char		*ssl_finish_stdin(size_t *len, int i, char *str, char *buf)
 {
 	char	*ret;
@@ -48,6 +76,6 @@ char		*ssl_read_stdin(size_t *len, int i, t_flags *flags)
 		}
 	}
 	str = ssl_finish_stdin(len, i, str, buf);
-	flags->p == -2 ? 0 : ft_printf("%s", str);
+	flags->p == -2 ? 0 : write(1, str, i);
 	return (str);
 }

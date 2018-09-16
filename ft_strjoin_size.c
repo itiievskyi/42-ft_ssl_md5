@@ -26,7 +26,8 @@ char	*ft_strjoin_size(char const *s1, char const *s2, size_t size)
 	y = 0;
 	if ((s = (char*)malloc(sizeof(char) * (size + 1))) == NULL)
 		return (NULL);
-	len_s1 = (size % BUF == 0 ? (size - BUF) : ( size - (size % BUF)));
+	len_s1 = ((size % BUF == 0 && size > 0) ?
+		(size - BUF) : (size - (size % BUF)));
 	len_s2 = size - len_s1;
 	while (x < len_s1)
 		s[y++] = s1[x++];

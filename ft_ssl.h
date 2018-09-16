@@ -55,6 +55,8 @@ void				md5(int argc, char **argv);
 void				sha256(int argc, char **argv);
 void				wrong_argument(t_ssl_func handler[], char **argv, int i);
 char				*ssl_read_stdin(size_t *len, int i, t_flags *flags);
+char				*ssl_read_file(char *arg, size_t *length, char f[],
+					char **file);
 char				*ft_strjoin_size(char const *s1, char const *s2,
 					size_t size);
 void				usage(void);

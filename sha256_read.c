@@ -130,23 +130,27 @@ void		sha256_parse_targets(int argc, char **argv, t_flags *flags,
 void		sha256(int argc, char **argv)
 {
 	t_flags			*flags;
-	t_sha256_ctx	*ctx;
+	t_sha256_ctx	ctx;
 
-	ctx = (t_sha256_ctx*)malloc(sizeof(t_sha256_ctx));
-	flags = (t_flags*)malloc(sizeof(t_flags));
+	if (!(flags = (t_flags*)malloc(sizeof(t_flags))))
+		return ;
 	flags->nomore = 0;
 	flags->p = 0;
 	flags->q = 0;
 	flags->r = 0;
 	flags->s = 0;
 	flags->stdin = 0;
-	ctx->argc = argc;
-	if (argc == 2)
+	ctx.argc = argc;
+	ctx.targets = 0;
+	ft_memcpy(ctx.func, "sha256\0\0\0\0", 10);
+	sha256_parse_targets(argc, argv, flags, &ctx);
+	if (ctx.targets == 0 || ((flags->stdin == ctx.targets) &&
+	(flags->q || flags->r)))
 	{
+		flags_init(flags);
 		(flags->p) = -2;
 		++(flags->stdin);
-		sha256_encrypt(sha256_read_stdin(ctx, 0, flags), flags, ctx);
+		sha256_encrypt(ssl_read_stdin(&ctx.len, 0, flags), flags, &ctx);
 	}
-	else
-		sha256_parse_targets(argc, argv, flags, ctx);
+	free(flags);
 }

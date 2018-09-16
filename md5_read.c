@@ -13,33 +13,6 @@
 #include "ft_ssl.h"
 #include "md5.h"
 
-char		*md5_read_file(char *arg, int fd, int length, t_md5_ctx *ctx)
-{
-	char	*str;
-	char	ch;
-	int		i;
-
-	i = 0;
-	str = NULL;
-	if (((fd = open(arg, O_WRONLY)) < 0 && errno == EISDIR) ||
-	(fd = open(arg, O_RDONLY)) < 0)
-		ft_printf("ft_ssl: md5: %s: %s\n", arg, strerror(errno));
-	else
-	{
-		while (read(fd, &ch, 1) > 0)
-			length++;
-		str = (char*)malloc(sizeof(char) * (length + 1));
-		close(fd);
-		fd = open(arg, O_RDONLY);
-		while (read(fd, &ch, 1) > 0)
-			str[i++] = ch;
-		str[i] = '\0';
-		ctx->len = i;
-		ctx->file = arg;
-	}
-	return (str);
-}
-
 int			md5_choose_target(char **argv, t_flags *flags, int i,
 			t_md5_ctx *ctx)
 {
@@ -71,6 +44,7 @@ int			md5_choose_target(char **argv, t_flags *flags, int i,
 				return (i);
 			flags_init(flags);
 		}
+		ctx->len = 0;
 	}
 	return (i);
 }
@@ -80,6 +54,7 @@ void		md5_parse_targets(int argc, char **argv, t_flags *flags,
 {
 	int		j;
 	int		i;
+	int		fd;
 
 	i = 1;
 	while (++i < argc && ((j = 0) == 0) && !flags->nomore)
@@ -94,7 +69,14 @@ void		md5_parse_targets(int argc, char **argv, t_flags *flags,
 		i = ((flags->s) ? i - 1 : i - 2);
 	flags_init(flags);
 	while (++i < argc && i > 1 && flags->nomore == 1)
-		md5_encrypt(md5_read_file(argv[i], 0, i, ctx), flags, ctx);
+	{
+		if ((((fd = open(argv[i], O_WRONLY)) < 0 && errno == EISDIR) ||
+		(fd = open(argv[i], O_RDONLY)) < 0) && ++(ctx->targets))
+			ft_printf("ft_ssl: %s: %s: %s\n", ctx->func, argv[i], strerror(errno));
+		else
+			md5_encrypt(ssl_read_file(
+			argv[i], &ctx->len, ctx->func, &ctx->file), flags, ctx);
+	}
 }
 
 void		md5(int argc, char **argv)
@@ -112,6 +94,7 @@ void		md5(int argc, char **argv)
 	flags->stdin = 0;
 	ctx.argc = argc;
 	ctx.targets = 0;
+	ft_memcpy(ctx.func, "md5\0\0\0\0\0\0\0", 10);
 	md5_parse_targets(argc, argv, flags, &ctx);
 	if (ctx.targets == 0 || ((flags->stdin == ctx.targets) &&
 	(flags->q || flags->r)))

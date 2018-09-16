@@ -23,6 +23,7 @@
 
 typedef struct				s_sha256_ctx
 {
+	char					func[10];
 	char					*file;
 	uint32_t				state[8];
 	uint32_t				a;
@@ -36,6 +37,7 @@ typedef struct				s_sha256_ctx
 	size_t					len;
 	int						argc;
 	int						blocks;
+	int						targets;
 }							t_sha256_ctx;
 
 static uint32_t	g_words[64] =
