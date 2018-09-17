@@ -22,6 +22,7 @@
 # define FLAGS "pqrs"
 # define MAX 9223372036854775807
 # define BUF 10000
+# define HEX "0123456789abcdef"
 
 typedef struct		s_ssl_func
 {
@@ -53,6 +54,7 @@ typedef struct		s_flags
 
 void				md5(int argc, char **argv);
 void				sha256(int argc, char **argv);
+int					flags_init(t_flags *flags);
 void				wrong_argument(t_ssl_func handler[], char **argv, int i);
 char				*ssl_read_stdin(size_t *len, int i, t_flags *flags);
 char				*ssl_read_file(char *arg, size_t *length, char f[],
@@ -60,4 +62,8 @@ char				*ssl_read_file(char *arg, size_t *length, char f[],
 char				*ft_strjoin_size(char const *s1, char const *s2,
 					size_t size);
 void				usage(void);
+void				check_extra_flags(t_flags *flags, char flag, char f[]);
+void				ssl_s_error(t_flags *flags, char f[]);
+void				ssl_err_flag(char ch, t_flags *flags, char f[]);
+char				*ft_itoa_hex(uint32_t state[], int size, int i, char end);
 #endif

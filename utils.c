@@ -12,7 +12,7 @@
 
 #include "ft_ssl.h"
 
-void		flags_init(t_flags *flags)
+int 		flags_init(t_flags *flags)
 {
 	if (flags->q != 1)
 		flags->q = 0;
@@ -20,14 +20,5 @@ void		flags_init(t_flags *flags)
 		flags->r = 0;
 	flags->s = 0;
 	flags->p = 0;
-}
-
-void		file_init(t_file *file, t_flags *flags)
-{
-	if (flags)
-	{
-	}
-	file->fd = 0;
-	file->q = 0;
-	file->r = 0;
+	return (1);
 }

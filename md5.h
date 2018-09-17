@@ -15,19 +15,19 @@
 
 # define RL(x, c) (((x) << (c)) | ((x) >> (32 - (c))))
 
-typedef struct				s_md5_ctx
+typedef struct	s_md5_ctx
 {
-	char					func[10];
-	char					*file;
-	uint32_t				state[4];
-	uint32_t				a;
-	uint32_t				b;
-	uint32_t				c;
-	uint32_t				d;
-	size_t					len;
-	int						argc;
-	int						targets;
-}							t_md5_ctx;
+	char		func[10];
+	char		*file;
+	uint32_t	state[4];
+	uint32_t	a;
+	uint32_t	b;
+	uint32_t	c;
+	uint32_t	d;
+	size_t		len;
+	int			argc;
+	int			targets;
+}				t_md5_ctx;
 
 static uint32_t	g_words[64] =
 {
@@ -64,13 +64,8 @@ static uint32_t	g_s[64] =
 	6, 10, 15, 21, 6, 10, 15, 21, 6, 10, 15, 21, 6, 10, 15, 21
 };
 
-void						flags_init(t_flags *flags);
-void						md5_s_error(t_flags *flags);
-void						md5_err_flag(char ch, t_flags *flags);
-void						md5_encrypt(char *str, t_flags *flags,
-							t_md5_ctx *ctx);
-void						parse_targets(int argc, char **argv,
-							t_flags *flags, t_md5_ctx *ctx);
-void						md5_clean(t_flags *flags);
+int				md5_encrypt(char *str, t_flags *flags, t_md5_ctx *ctx);
+void			parse_targets(int argc, char **argv, t_flags *flags,
+				t_md5_ctx *ctx);
 
 #endif

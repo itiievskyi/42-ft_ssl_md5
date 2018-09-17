@@ -21,24 +21,24 @@
 # define S0(x) (RR(x,7) ^ RR(x,18) ^ ((x) >> 3))
 # define S1(x) (RR(x,17) ^ RR(x,19) ^ ((x) >> 10))
 
-typedef struct				s_sha256_ctx
+typedef struct	s_sha256_ctx
 {
-	char					func[10];
-	char					*file;
-	uint32_t				state[8];
-	uint32_t				a;
-	uint32_t				b;
-	uint32_t				c;
-	uint32_t				d;
-	uint32_t				e;
-	uint32_t				f;
-	uint32_t				g;
-	uint32_t				h;
-	size_t					len;
-	int						argc;
-	int						blocks;
-	int						targets;
-}							t_sha256_ctx;
+	char		func[10];
+	char		*file;
+	uint32_t	state[8];
+	uint32_t	a;
+	uint32_t	b;
+	uint32_t	c;
+	uint32_t	d;
+	uint32_t	e;
+	uint32_t	f;
+	uint32_t	g;
+	uint32_t	h;
+	size_t		len;
+	int			argc;
+	int			blocks;
+	int			targets;
+}				t_sha256_ctx;
 
 static uint32_t	g_words[64] =
 {
@@ -60,12 +60,7 @@ static uint32_t	g_words[64] =
 	0x90befffa, 0xa4506ceb, 0xbef9a3f7, 0xc67178f2
 };
 
-void						flags_init(t_flags *flags);
-void						sha256_s_error(t_flags *flags);
-void						sha256_err_flag(char ch, t_flags *flags);
-void						sha256_encrypt(char *str, t_flags *flags,
-							t_sha256_ctx *ctx);
-void						sha256_parse_targets(int argc, char **argv,
-							t_flags *flags, t_sha256_ctx *ctx);
-
+int				sha256_encrypt(char *str, t_flags *flags, t_sha256_ctx *ctx);
+void			sha256_parse_targets(int argc, char **argv, t_flags *flags,
+				t_sha256_ctx *ctx);
 #endif

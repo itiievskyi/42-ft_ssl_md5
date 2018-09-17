@@ -13,65 +13,6 @@
 #include "ft_ssl.h"
 #include "sha256.h"
 
-char		*sha256_read_file(char *arg, int fd, int length, t_sha256_ctx *ctx)
-{
-	char	*str;
-	char	ch;
-	int		i;
-
-	i = 0;
-	str = NULL;
-	if (((fd = open(arg, O_WRONLY)) < 0 && errno == EISDIR) ||
-	(fd = open(arg, O_RDONLY)) < 0)
-		ft_printf("ft_ssl: sha256: %s: %s\n", arg, strerror(errno));
-	else
-	{
-		while (read(fd, &ch, 1) > 0)
-			length++;
-		str = (char*)malloc(sizeof(char) * (length + 1));
-		close(fd);
-		fd = open(arg, O_RDONLY);
-		while (read(fd, &ch, 1) > 0)
-			str[i++] = ch;
-		str[i] = '\0';
-		ctx->len = i;
-		ctx->file = arg;
-	}
-	return (str);
-}
-
-char		*sha256_read_stdin(t_sha256_ctx *ctx, int i, t_flags *flags)
-{
-	char	*buf;
-	char	*temp;
-	char	*str;
-	char	ch;
-
-	str = NULL;
-	buf = ft_strnew(BUF);
-	if (flags->stdin == 1)
-	{
-		while (read(0, &ch, 1) > 0)
-		{
-			if ((i) % BUF == 0 && i > 0)
-			{
-				temp = str;
-				str = ft_strjoin(temp, buf);
-				temp ? free(temp) : 0;
-				buf ? free(buf) : 0;
-				buf = ft_strnew(BUF);
-			}
-			buf[i % BUF] = ch;
-			i++;
-		}
-	}
-	str = ft_strjoin(str, buf);
-	buf ? free(buf) : 0;
-	flags->p == -2 ? 0 : ft_printf("%s", str);
-	ctx->len = (i <= 0 ? 0 : i);
-	return (str);
-}
-
 int			sha256_choose_target(char **argv, t_flags *flags, int i,
 			t_sha256_ctx *ctx)
 {
@@ -80,26 +21,22 @@ int			sha256_choose_target(char **argv, t_flags *flags, int i,
 	j = 0;
 	while (argv[i][++j])
 	{
-		!ft_strchr(FLAGS, argv[i][j]) ? sha256_err_flag(argv[i][j], flags) : 0;
-		argv[i][j] == 'q' ? flags->q = 1 : 0;
-		(argv[i][j] == 'r' && !flags->q) ? flags->r = 1 : 0;
+		check_extra_flags(flags, argv[i][j], ctx->func);
 		if (argv[i][j] == 's' && (flags->s = 1) && argv[i][j + 1]
-		&& (ctx->len = ft_strlen(&argv[i][j + 1])) < MAX)
-		{
-			sha256_encrypt(&argv[i][j + 1], flags, ctx);
+		&& (ctx->len = ft_strlen(&argv[i][j + 1])) < MAX &&
+		sha256_encrypt(&argv[i][j + 1], flags, ctx) > 0)
 			return (i);
-		}
 		else if (argv[i][j] == 's' && i + 1 >= ctx->argc)
-			sha256_s_error(flags);
-		else if (argv[i][j] == 's' && (ctx->len = ft_strlen(argv[i + 1])) < MAX)
-		{
-			sha256_encrypt(argv[i + 1], flags, ctx);
+			ssl_s_error(flags, ctx->func);
+		else if (argv[i][j] == 's' && (ctx->len = ft_strlen(argv[i + 1])) < MAX
+		&& sha256_encrypt(argv[i + 1], flags, ctx) > 0)
 			return (i + 1);
-		}
 		else if (argv[i][j] == 'p' && ++(flags->p) && ++(flags->stdin))
 		{
-			sha256_encrypt(sha256_read_stdin(ctx, 0, flags), flags, ctx);
-			return (i);
+			sha256_encrypt(ssl_read_stdin(&ctx->len, 0, flags), flags, ctx);
+			if (argv[i][j + 1] == '\0')
+				return (i);
+			flags_init(flags);
 		}
 	}
 	return (i);
@@ -110,11 +47,11 @@ void		sha256_parse_targets(int argc, char **argv, t_flags *flags,
 {
 	int		j;
 	int		i;
+	int		fd;
 
 	i = 1;
-	while (++i < argc && ((j = 0) == 0) && !flags->nomore)
+	while (++i < argc && ((j = 0) == 0) && !flags->nomore && flags_init(flags))
 	{
-		flags_init(flags);
 		if (argv[i][0] == '-' && !flags->nomore)
 			i = sha256_choose_target(argv, flags, i, ctx);
 		else
@@ -123,8 +60,16 @@ void		sha256_parse_targets(int argc, char **argv, t_flags *flags,
 	if (!flags->p)
 		i = ((flags->s) ? i - 1 : i - 2);
 	flags_init(flags);
-	while (++i < argc && i > 1)
-		sha256_encrypt(sha256_read_file(argv[i], 0, i, ctx), flags, ctx);
+	while (++i < argc && i > 1 && flags->nomore == 1)
+	{
+		if ((((fd = open(argv[i], O_WRONLY)) < 0 && errno == EISDIR) ||
+		(fd = open(argv[i], O_RDONLY)) < 0) && ++(ctx->targets))
+			ft_printf("ft_ssl: %s: %s: %s\n", ctx->func, argv[i],
+			strerror(errno));
+		else
+			sha256_encrypt(ssl_read_file(
+			argv[i], &ctx->len, ctx->func, &ctx->file), flags, ctx);
+	}
 }
 
 void		sha256(int argc, char **argv)

@@ -28,13 +28,12 @@ SOURCES =	main.c \
 			io.c \
 			md5_read.c \
 			md5_encrypt.c \
-			md5_errors.c \
 			sha256_read.c \
 			sha256_encrypt.c \
-			sha256_errors.c \
 			errors.c \
 			utils.c \
 			ft_strjoin_size.c \
+			ft_itoa_hex.c \
 
 SRCS = $(addprefix $(DIR_S)/,$(SOURCES))
 

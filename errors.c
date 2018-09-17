@@ -35,3 +35,19 @@ void	wrong_argument(t_ssl_func handler[], char **argv, int i)
 	ft_printf("\n");
 	exit(-1);
 }
+
+void		ssl_s_error(t_flags *flags, char f[])
+{
+	free(flags);
+	ft_printf("ft_ssl: %s: option requires an argument -- s\n", f);
+	ft_printf("usage: ft_ssl %s [-pqrt] [-s string] [files ...]\n", f);
+	exit(-1);
+}
+
+void		ssl_err_flag(char ch, t_flags *flags, char f[])
+{
+	free(flags);
+	ft_printf("ft_ssl: %s: illegal option -- %c\n", f, ch);
+	ft_printf("usage: ft_ssl %s [-pqrt] [-s string] [files ...]\n", f);
+	exit(-1);
+}

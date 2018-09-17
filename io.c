@@ -12,6 +12,13 @@
 
 #include "ft_ssl.h"
 
+void		check_extra_flags(t_flags *flags, char flag, char f[])
+{
+	!ft_strchr(FLAGS, flag) ? ssl_err_flag(flag, flags, f) : 0;
+	(flag == 'q') ? flags->q = 1 : 0;
+	(flag == 'r' && !flags->q) ? flags->r = 1 : 0;
+}
+
 char		*ssl_read_file(char *arg, size_t *length, char f[], char **file)
 {
 	char	*str;
