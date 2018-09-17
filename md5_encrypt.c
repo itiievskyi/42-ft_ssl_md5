@@ -88,7 +88,7 @@ void		md5_process(unsigned char *input, int len, t_md5_ctx *ctx)
 	ctx->state[3] = 0x10325476;
 	while (offset < len)
 	{
-		md5_transform((uint32_t *) (input + offset), ctx);
+		md5_transform((uint32_t *)(input + offset), ctx);
 		offset += (512 / 8);
 	}
 }

@@ -37,7 +37,8 @@ char		*ssl_read_file(char *arg, size_t *length, char f[], char **file)
 			i++;
 		close(fd);
 		str = (char*)malloc(sizeof(char) * (i + 1));
-		(fd = open(arg, O_RDONLY)) > 0 ? i = 0 : 0;
+		(fd = open(arg, O_RDONLY)) > 0 ?
+			i = 0 : 0;
 		while (read(fd, &ch, 1) > 0)
 			str[i++] = ch;
 		str[i] = '\0';

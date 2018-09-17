@@ -12,13 +12,13 @@
 
 #include "ft_ssl.h"
 
-void	usage(void)
+void		usage(void)
 {
 	ft_printf("usage: ft_ssl command [command opts] [command args]\n");
 	exit(-1);
 }
 
-void	wrong_argument(t_ssl_func handler[], char **argv, int i)
+void		wrong_argument(t_ssl_func handler[], char **argv, int i)
 {
 	ft_printf("ft_ssl: Error: '%s' is an invalid command.\n\n", argv[1]);
 	ft_printf("Standard commands:\n");

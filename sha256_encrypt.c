@@ -13,25 +13,6 @@
 #include "ft_ssl.h"
 #include "sha256.h"
 
-void		sha256_print(char *str, t_flags *flags, t_sha256_ctx *ctx)
-{
-	int				i;
-	char			*ret;
-
-	i = -1;
-	if (!flags->q && !flags->r && !flags->p)
-		ft_printf("SHA256 (%c%s%c) = ", (flags->s ? '\"' : 0),
-		(flags->s ? str : ctx->file), (flags->s ? '\"' : 0));
-	ret = ft_itoa_hex(ctx->state, 64, 0, 'B');
-	write(1, ret, 64);
-	((!flags->q && !flags->r) || flags->q || flags->p) ? ft_printf("\n") : 0;
-	if (!flags->q && flags->r && !flags->p)
-		ft_printf(" %c%s%c\n", (flags->s ? '\"' : 0),
-		(flags->s ? str : ctx->file), (flags->s ? '\"' : 0));
-	flags->s ? 0 : free(str);
-	free(ret);
-}
-
 void		sha256_abcd_assign(t_sha256_ctx *ctx, char order)
 {
 	if (order == '<')
@@ -58,22 +39,22 @@ void		sha256_abcd_assign(t_sha256_ctx *ctx, char order)
 	}
 }
 
-void		sha256_transform(uint32_t *input, t_sha256_ctx *ctx)
+void		sha256_transform(uint32_t *input, t_sha256_ctx *ctx, int i, int rnd)
 {
-	uint32_t	i;
 	uint32_t	t1;
 	uint32_t	t2;
 	uint32_t	w[64];
 
-	for(i=0; i<16; i++)
+	while (++i < 16)
 		w[i] = input[i];
-	for(i=16; i<64; i++)
-		w[i] = w[i-16] + S0(w[i-15]) + w[i-7] + S1(w[i-2]);
+	i -= 1;
+	while (++i < 64)
+		w[i] = w[i - 16] + S0(w[i - 15]) + w[i - 7] + S1(w[i - 2]);
 	sha256_abcd_assign(ctx, '<');
-	for(i=0; i<64; i++)
+	while (++rnd < 64)
 	{
 		t1 = ctx->h + E1(ctx->e) + CH(ctx->e, ctx->f, ctx->g)
-			+ g_words[i] + w[i];
+			+ g_words[rnd] + w[rnd];
 		t2 = E0(ctx->a) + MAJ(ctx->a, ctx->b, ctx->c);
 		ctx->h = ctx->g;
 		ctx->g = ctx->f;
@@ -102,28 +83,17 @@ void		sha256_process(uint32_t **input, t_sha256_ctx *ctx)
 	ctx->state[7] = 0x5be0cd19;
 	while (j < ctx->blocks)
 	{
-		sha256_transform(input[j], ctx);
+		sha256_transform(input[j], ctx, -1, -1);
 		j++;
 	}
 }
 
-int		sha256_encrypt(char *str, t_flags *flags, t_sha256_ctx *ctx)
+static void	sha256_finalize(char *str, uint32_t **input, t_sha256_ctx *ctx)
 {
 	int			i;
 	size_t		n;
-	uint64_t	len;
-	uint32_t	**input;
 
 	n = 0;
-	if (!str || !flags || ++(ctx->targets) < 0 || !(i = -1))
-		return (-1);
-	len = ctx->len * 8 + 1;
-	while (len % 512 != 448)
-		len++;
-	ctx->blocks = (len += 64) / 512;
-	input = (uint32_t**)calloc(ctx->blocks, sizeof(uint32_t*));
-	while (++i < ctx->blocks)
-		input[i] = (uint32_t*)calloc(16, sizeof(uint32_t));
 	i = 0;
 	while (n < ctx->len)
 	{
@@ -134,7 +104,33 @@ int		sha256_encrypt(char *str, t_flags *flags, t_sha256_ctx *ctx)
 	input[i][(n) % 64 / 4] |= 0x80 << (3 - ((n) % 4)) * 8;
 	input[ctx->blocks - 1][14] = (uint32_t)((ctx->len * 8) >> 32);
 	input[ctx->blocks - 1][15] = (uint32_t)((ctx->len * 8) & 0xffffffff);
+}
+
+int			sha256_encrypt(char *str, t_flags *flags, t_sha256_ctx *ctx)
+{
+	int			i;
+	uint64_t	len;
+	uint32_t	**input;
+
+	if (!str || !flags || ++(ctx->targets) < 0)
+		return (-1);
+	i = -1;
+	len = ctx->len * 8 + 1;
+	while (len % 512 != 448)
+		len++;
+	ctx->blocks = (len += 64) / 512;
+	input = (uint32_t**)malloc(sizeof(uint32_t*) * ctx->blocks);
+	while (++i < ctx->blocks)
+	{
+		input[i] = (uint32_t*)malloc(sizeof(uint32_t) * 16);
+		ft_bzero(input[i], sizeof(uint32_t) * 16);
+	}
+	sha256_finalize(str, input, ctx);
 	sha256_process(input, ctx);
 	sha256_print(str, flags, ctx);
+	i = -1;
+	while (++i < ctx->blocks)
+		free(input[i]);
+	free(input);
 	return (1);
 }

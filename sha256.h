@@ -10,8 +10,8 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef MD5_H
-# define MD5_H
+#ifndef SHA256_H
+# define SHA256_H
 
 # define RR(a,b) (((a) >> (b)) | ((a) << (32-(b))))
 # define CH(x,y,z) (((x) & (y)) ^ (~(x) & (z)))
@@ -63,4 +63,5 @@ static uint32_t	g_words[64] =
 int				sha256_encrypt(char *str, t_flags *flags, t_sha256_ctx *ctx);
 void			sha256_parse_targets(int argc, char **argv, t_flags *flags,
 				t_sha256_ctx *ctx);
+void			sha256_print(char *str, t_flags *flags, t_sha256_ctx *ctx);
 #endif

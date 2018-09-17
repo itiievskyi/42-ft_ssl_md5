@@ -28,6 +28,7 @@ SOURCES =	main.c \
 			io.c \
 			md5_read.c \
 			md5_encrypt.c \
+			sha_print.c \
 			sha256_read.c \
 			sha256_encrypt.c \
 			errors.c \
