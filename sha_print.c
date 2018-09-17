@@ -12,6 +12,7 @@
 
 #include "ft_ssl.h"
 #include "sha256.h"
+#include "sha512.h"
 
 void		sha256_print(char *str, t_flags *flags, t_sha256_ctx *ctx)
 {
@@ -43,6 +44,25 @@ void		sha224_print(char *str, t_flags *flags, t_sha256_ctx *ctx)
 		(flags->s ? str : ctx->file), (flags->s ? '\"' : 0));
 	ret = ft_itoa_hex(ctx->state, 56, 0, 'B');
 	write(1, ret, 56);
+	((!flags->q && !flags->r) || flags->q || flags->p) ? ft_printf("\n") : 0;
+	if (!flags->q && flags->r && !flags->p)
+		ft_printf(" %c%s%c\n", (flags->s ? '\"' : 0),
+		(flags->s ? str : ctx->file), (flags->s ? '\"' : 0));
+	flags->s ? 0 : free(str);
+	free(ret);
+}
+
+void		sha512_print(char *str, t_flags *flags, t_sha512_ctx *ctx)
+{
+	int				i;
+	char			*ret;
+
+	i = -1;
+	if (!flags->q && !flags->r && !flags->p)
+		ft_printf("SHA512 (%c%s%c) = ", (flags->s ? '\"' : 0),
+		(flags->s ? str : ctx->file), (flags->s ? '\"' : 0));
+	ret = ft_itoa_hex_512(ctx->state, 128, 0, 'B');
+	write(1, ret, 128);
 	((!flags->q && !flags->r) || flags->q || flags->p) ? ft_printf("\n") : 0;
 	if (!flags->q && flags->r && !flags->p)
 		ft_printf(" %c%s%c\n", (flags->s ? '\"' : 0),

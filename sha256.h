@@ -13,13 +13,13 @@
 #ifndef SHA256_H
 # define SHA256_H
 
-# define RR(a,b) (((a) >> (b)) | ((a) << (32-(b))))
-# define CH(x,y,z) (((x) & (y)) ^ (~(x) & (z)))
-# define MAJ(x,y,z) (((x) & (y)) ^ ((x) & (z)) ^ ((y) & (z)))
-# define E0(x) (RR(x,2) ^ RR(x,13) ^ RR(x,22))
-# define E1(x) (RR(x,6) ^ RR(x,11) ^ RR(x,25))
-# define S0(x) (RR(x,7) ^ RR(x,18) ^ ((x) >> 3))
-# define S1(x) (RR(x,17) ^ RR(x,19) ^ ((x) >> 10))
+# define RR(a, b) (((a) >> (b)) | ((a) << (32 - (b))))
+# define CH(x, y, z) (((x) & (y)) ^ (~(x) & (z)))
+# define MAJ(x, y, z) (((x) & (y)) ^ ((x) & (z)) ^ ((y) & (z)))
+# define E0(x) (RR(x, 2) ^ RR(x, 13) ^ RR(x, 22))
+# define E1(x) (RR(x, 6) ^ RR(x, 11) ^ RR(x, 25))
+# define S0(x) (RR(x, 7) ^ RR(x, 18) ^ ((x) >> 3))
+# define S1(x) (RR(x, 17) ^ RR(x, 19) ^ ((x) >> 10))
 
 typedef struct	s_sha256_ctx
 {
