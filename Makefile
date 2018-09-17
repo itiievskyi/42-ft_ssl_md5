@@ -25,16 +25,17 @@ HEADER =	ft_ssl.h
 LIB = libft/libft.a
 
 SOURCES =	main.c \
-			io.c \
-			md5_read.c \
-			md5_encrypt.c \
-			sha_print.c \
-			sha256_read.c \
-			sha256_encrypt.c \
-			errors.c \
-			utils.c \
 			ft_strjoin_size.c \
 			ft_itoa_hex.c \
+			errors.c \
+			io.c \
+			utils.c \
+			md5_read.c \
+			md5_encrypt.c \
+			sha224.c \
+			sha256_read.c \
+			sha256_encrypt.c \
+			sha_print.c \
 
 SRCS = $(addprefix $(DIR_S)/,$(SOURCES))
 

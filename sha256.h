@@ -63,5 +63,12 @@ static uint32_t	g_words[64] =
 int				sha256_encrypt(char *str, t_flags *flags, t_sha256_ctx *ctx);
 void			sha256_parse_targets(int argc, char **argv, t_flags *flags,
 				t_sha256_ctx *ctx);
+void			sha256_abcd_assign(t_sha256_ctx *ctx, char order);
+void			sha256_transform(uint32_t *input, t_sha256_ctx *ctx, int i,
+				int rnd);
+void			sha256_process(uint32_t **input, t_sha256_ctx *ctx);
+void			sha256_finalize(char *str, uint32_t **input, t_sha256_ctx *ctx);
 void			sha256_print(char *str, t_flags *flags, t_sha256_ctx *ctx);
+int				sha224_encrypt(char *str, t_flags *flags, t_sha256_ctx *ctx);
+void			sha224_print(char *str, t_flags *flags, t_sha256_ctx *ctx);
 #endif

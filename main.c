@@ -20,6 +20,9 @@ void	init_functions(t_ssl_func handler[FUNCTIONS])
 	ft_strncpy(handler[1].func, "sha256", FUNC_NAME);
 	ft_strncpy(handler[1].type, "md", 3);
 	handler[1].handler = sha256;
+	ft_strncpy(handler[2].func, "sha224", FUNC_NAME);
+	ft_strncpy(handler[2].type, "md", 3);
+	handler[2].handler = sha224;
 }
 
 void	parse_handler(int argc, char **argv)
@@ -47,6 +50,6 @@ void	parse_handler(int argc, char **argv)
 int		main(int argc, char **argv)
 {
 	parse_handler(argc, argv);
-	system("leaks ft_ssl");
+//	system("leaks ft_ssl");
 	return (0);
 }

@@ -88,7 +88,7 @@ void		sha256_process(uint32_t **input, t_sha256_ctx *ctx)
 	}
 }
 
-static void	sha256_finalize(char *str, uint32_t **input, t_sha256_ctx *ctx)
+void		sha256_finalize(char *str, uint32_t **input, t_sha256_ctx *ctx)
 {
 	int			i;
 	size_t		n;
