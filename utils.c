@@ -22,3 +22,16 @@ int		flags_init(t_flags *flags)
 	flags->p = 0;
 	return (1);
 }
+
+void		clean_array(char **arr)
+{
+	int a;
+
+	a = -1;
+	if (arr)
+	{
+		while (arr[++a])
+			free(arr[a]);
+		free(arr);
+	}
+}

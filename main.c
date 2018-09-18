@@ -45,7 +45,11 @@ void	parse_handler(int argc, char **argv)
 
 	i = 0;
 	no_error = false;
-	argc == 1 ? usage() : 0;
+	if (argc == 1)
+	{
+		stdin_cmd(0, 0, handler, no_error);
+		return ;
+	}
 	init_functions(handler);
 	while (i < FUNCTIONS)
 	{

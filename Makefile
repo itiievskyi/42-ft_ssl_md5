@@ -29,6 +29,7 @@ SOURCES =	main.c \
 			ft_itoa_hex.c \
 			errors.c \
 			io.c \
+			ssl_stdin_cmd.c \
 			utils.c \
 			md5_read.c \
 			md5_encrypt.c \

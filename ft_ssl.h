@@ -52,6 +52,8 @@ typedef struct	s_flags
 	int			stdin;
 }				t_flags;
 
+void			init_functions(t_ssl_func handler[FUNCTIONS]);
+void			stdin_cmd(int argc, int i, t_ssl_func handler[], bool no_error);
 void			md5(int argc, char **argv);
 void			sha256(int argc, char **argv);
 void			sha224(int argc, char **argv);
@@ -71,4 +73,5 @@ void			ssl_s_error(t_flags *flags, char f[]);
 void			ssl_err_flag(char ch, t_flags *flags, char f[]);
 char			*ft_itoa_hex(uint32_t state[], int size, int i, char end);
 char			*ft_itoa_hex_512(uint64_t state[], int size, int i, char end);
+void			clean_array(char **arr);
 #endif
