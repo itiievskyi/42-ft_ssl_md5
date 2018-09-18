@@ -10,19 +10,6 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   sha256_encrypt.c                                   :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: itiievsk <marvin@42.fr>                    +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2018/09/07 09:25:12 by itiievsk          #+#    #+#             */
-/*   Updated: 2018/09/07 09:25:14 by itiievsk         ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
-
 #include "ft_ssl.h"
 #include "sha512.h"
 
@@ -56,15 +43,15 @@ void		sha512_transform(uint64_t *input, t_sha512_ctx *ctx, int i, int rnd)
 {
 	uint64_t	t1;
 	uint64_t	t2;
-	uint64_t	w[64];
+	uint64_t	w[80];
 
 	while (++i < 16)
 		w[i] = input[i];
 	i -= 1;
-	while (++i < 64)
+	while (++i < 80)
 		w[i] = w[i - 16] + S0(w[i - 15]) + w[i - 7] + S1(w[i - 2]);
 	sha512_abcd_assign(ctx, '<');
-	while (++rnd < 64)
+	while (++rnd < 80)
 	{
 		t1 = ctx->h + E1(ctx->e) + CH(ctx->e, ctx->f, ctx->g)
 			+ g_words64[rnd] + w[rnd];
@@ -86,14 +73,14 @@ void		sha512_process(uint64_t **input, t_sha512_ctx *ctx)
 	int		j;
 
 	j = 0;
-	ctx->state[0] = 0x6a09e667;
-	ctx->state[1] = 0xbb67ae85;
-	ctx->state[2] = 0x3c6ef372;
-	ctx->state[3] = 0xa54ff53a;
-	ctx->state[4] = 0x510e527f;
-	ctx->state[5] = 0x9b05688c;
-	ctx->state[6] = 0x1f83d9ab;
-	ctx->state[7] = 0x5be0cd19;
+	ctx->state[0] = 0x6a09e667f3bcc908;
+	ctx->state[1] = 0xbb67ae8584caa73b;
+	ctx->state[2] = 0x3c6ef372fe94f82b;
+	ctx->state[3] = 0xa54ff53a5f1d36f1;
+	ctx->state[4] = 0x510e527fade682d1;
+	ctx->state[5] = 0x9b05688c2b3e6c1f;
+	ctx->state[6] = 0x1f83d9abfb41bd6b;
+	ctx->state[7] = 0x5be0cd19137e2179;
 	while (j < ctx->blocks)
 	{
 		sha512_transform(input[j], ctx, -1, -1);
@@ -105,18 +92,22 @@ void		sha512_finalize(char *str, uint64_t **input, t_sha512_ctx *ctx)
 {
 	int			i;
 	size_t		n;
+	int			u;
 
 	n = 0;
 	i = 0;
+	u = 56;
 	while (n < ctx->len)
 	{
-		input[i][n % 64 / 4] |= ((str[n] << (3 - ((n) % 4)) * 8) &
-			(0xffffffff >> (((n) % 4)) * 8));
-		(((++n) % 64)) == 0 ? i++ : 0;
+		u = (n % 8 == 0 ? 56 : u - 8);
+		input[i][n % 128 / 8] |= (((uint64_t)str[n] << u) &
+			(0xffffffffffffffff >> (((n) % 8)) * 8));
+		(((++n) % 128)) == 0 ? i++ : 0;
 	}
-	input[i][(n) % 64 / 4] |= 0x80 << (3 - ((n) % 4)) * 8;
-	input[ctx->blocks - 1][14] = (uint64_t)((ctx->len * 8) >> 32);
-	input[ctx->blocks - 1][15] = (uint64_t)((ctx->len * 8) & 0xffffffffffffffff);
+	u = (n % 8 == 0 ? 56 : u - 8);
+	input[i][(n) % 128 / 8] |= (uint64_t)0x80 << u;
+	input[ctx->blocks - 1][14] = ((uint64_t)ctx->len * 8) >> 56;
+	input[ctx->blocks - 1][15] = ((uint64_t)ctx->len * 8) & 0xffffffffffffffff;
 }
 
 int			sha512_encrypt(char *str, t_flags *flags, t_sha512_ctx *ctx)

@@ -58,7 +58,7 @@ char			*ft_itoa_hex_512(uint64_t state[], int size, int i, char end)
 	r = 0x1000000000000000;
 	while (i < size)
 	{
-		temp = (end == 'L' ? 0 : state[i / 8]);
+		temp = (end == 'L' ? 0 : state[i / 16]);
 		j = 0;
 		while (j < 16)
 		{
