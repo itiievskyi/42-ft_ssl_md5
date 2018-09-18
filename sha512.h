@@ -95,4 +95,8 @@ void			sha512_finalize(char *str, uint64_t **input, t_sha512_ctx *ctx);
 void			sha512_print(char *str, t_flags *flags, t_sha512_ctx *ctx);
 int				sha384_encrypt(char *str, t_flags *flags, t_sha512_ctx *ctx);
 void			sha384_print(char *str, t_flags *flags, t_sha512_ctx *ctx);
+int				sha512224_encrypt(char *str, t_flags *flags, t_sha512_ctx *ctx);
+void			sha512224_print(char *str, t_flags *flags, t_sha512_ctx *ctx);
+int				sha512256_encrypt(char *str, t_flags *flags, t_sha512_ctx *ctx);
+void			sha512256_print(char *str, t_flags *flags, t_sha512_ctx *ctx);
 #endif

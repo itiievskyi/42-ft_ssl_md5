@@ -26,6 +26,15 @@ void	init_functions(t_ssl_func handler[FUNCTIONS])
 	ft_strncpy(handler[3].func, "sha512", FUNC_NAME);
 	ft_strncpy(handler[3].type, "md", 3);
 	handler[3].handler = sha512;
+	ft_strncpy(handler[4].func, "sha384", FUNC_NAME);
+	ft_strncpy(handler[4].type, "md", 3);
+	handler[4].handler = sha384;
+	ft_strncpy(handler[5].func, "sha512256", FUNC_NAME);
+	ft_strncpy(handler[5].type, "md", 3);
+	handler[5].handler = sha512256;
+	ft_strncpy(handler[6].func, "sha512224", FUNC_NAME);
+	ft_strncpy(handler[6].type, "md", 3);
+	handler[6].handler = sha512224;
 }
 
 void	parse_handler(int argc, char **argv)

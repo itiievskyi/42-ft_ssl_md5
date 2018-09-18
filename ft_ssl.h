@@ -17,8 +17,8 @@
 # include <errno.h>
 # include <stdbool.h>
 
-# define FUNCTIONS 4
-# define FUNC_NAME 7
+# define FUNCTIONS 7
+# define FUNC_NAME 10
 # define FLAGS "pqrs"
 # define MAX 9223372036854775807
 # define BUF 10000
@@ -56,6 +56,9 @@ void			md5(int argc, char **argv);
 void			sha256(int argc, char **argv);
 void			sha224(int argc, char **argv);
 void			sha512(int argc, char **argv);
+void			sha512224(int argc, char **argv);
+void			sha512256(int argc, char **argv);
+void			sha384(int argc, char **argv);
 int				flags_init(t_flags *flags);
 void			wrong_argument(t_ssl_func handler[], char **argv, int i);
 char			*ssl_read_stdin(size_t *len, int i, t_flags *flags);

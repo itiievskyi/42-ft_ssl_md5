@@ -39,6 +39,9 @@ SOURCES =	main.c \
 			sha512_read.c \
 			sha512_encrypt.c \
 			sha512_print.c \
+			sha384.c \
+			sha512_224.c \
+			sha512_256.c \
 
 SRCS = $(addprefix $(DIR_S)/,$(SOURCES))
 
