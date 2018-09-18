@@ -40,7 +40,6 @@ void	stdin_cmd(int argc, int i, t_ssl_func handler[], bool no_error)
 	char	**argv;
 	char	*temp;
 
-	str = ft_strnew(BUF);
 	ft_printf("FT_SSL> ");
 	while (get_next_line(0, &str) > 0)
 	{
@@ -55,7 +54,6 @@ void	stdin_cmd(int argc, int i, t_ssl_func handler[], bool no_error)
 		ft_printf("FT_SSL> ");
 		free(str);
 		clean_array(argv);
-		str = ft_strnew(BUF);
 	}
 	str ? free(str) : 0;
 }

@@ -12,18 +12,6 @@
 
 #include "libft.h"
 
-static void		clean_list(t_list *list)
-{
-	t_list		*temp;
-
-	while ((temp = list))
-	{
-		list = list->next;
-//		free(temp->room);
-		free(temp);
-	}
-}
-
 static t_list	*get_el(t_list **list, const int fd)
 {
 	t_list	*temp;
@@ -92,7 +80,5 @@ int				get_next_line(const int fd, char **line)
 	if (lstr < BUFF_SIZE && !(ft_strlen(temp->content)))
 		return (0);
 	lstr = record_lines(line, &temp, ft_strlen(temp->content));
-	clean_list(temp);
-	system("leaks -q ft_ssl");
 	return (lstr);
 }
