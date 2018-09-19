@@ -61,6 +61,5 @@ int		main(int argc, char **argv)
 		i++;
 	}
 	no_error == false ? wrong_argument(handler, argv, -1, false) : 0;
-	system("leaks ft_ssl");
 	return (0);
 }
