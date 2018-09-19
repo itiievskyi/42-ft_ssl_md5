@@ -62,7 +62,8 @@ void			sha512224(int argc, char **argv);
 void			sha512256(int argc, char **argv);
 void			sha384(int argc, char **argv);
 int				flags_init(t_flags *flags);
-void			wrong_argument(t_ssl_func handler[], char **argv, int i);
+void			wrong_argument(t_ssl_func handler[], char **argv, int i,
+				bool stdin);
 char			*ssl_read_stdin(size_t *len, int i, t_flags *flags);
 char			*ssl_read_file(char *arg, size_t *length, char f[],
 				char **file);

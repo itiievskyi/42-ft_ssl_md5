@@ -23,7 +23,7 @@ int		flags_init(t_flags *flags)
 	return (1);
 }
 
-void		clean_array(char **arr)
+void	clean_array(char **arr)
 {
 	int a;
 

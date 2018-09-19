@@ -12,13 +12,13 @@
 
 #include "ft_ssl.h"
 
-void		usage(void)
+void	usage(void)
 {
 	ft_printf("usage: ft_ssl command [command opts] [command args]\n");
 	exit(-1);
 }
 
-void		wrong_argument(t_ssl_func handler[], char **argv, int i)
+void	wrong_argument(t_ssl_func handler[], char **argv, int i, bool stdin)
 {
 	ft_printf("ft_ssl: Error: '%s' is an invalid command.\n\n", argv[1]);
 	ft_printf("Standard commands:\n");
@@ -33,10 +33,11 @@ void		wrong_argument(t_ssl_func handler[], char **argv, int i)
 	while (++i < FUNCTIONS && ft_strequ(handler[i].type, "cc"))
 		ft_printf("%s\n", handler[i].func);
 	ft_printf("\n");
+	stdin == true ? clean_array(argv) : 0;
 	exit(-1);
 }
 
-void		ssl_s_error(t_flags *flags, char f[])
+void	ssl_s_error(t_flags *flags, char f[])
 {
 	free(flags);
 	ft_printf("ft_ssl: %s: option requires an argument -- s\n", f);
@@ -44,7 +45,7 @@ void		ssl_s_error(t_flags *flags, char f[])
 	exit(-1);
 }
 
-void		ssl_err_flag(char ch, t_flags *flags, char f[])
+void	ssl_err_flag(char ch, t_flags *flags, char f[])
 {
 	free(flags);
 	ft_printf("ft_ssl: %s: illegal option -- %c\n", f, ch);

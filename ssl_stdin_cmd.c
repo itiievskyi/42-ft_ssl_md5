@@ -20,7 +20,11 @@ void	stdin_parse_handler(int argc, char **argv, t_ssl_func handler[],
 	i = 0;
 	while (argv[i++])
 		argc++;
-	argc == 1 ? usage() : 0;
+	if (argc == 1)
+	{
+		argv ? clean_array(argv) : 0;
+		usage();
+	}
 	i = 0;
 	init_functions(handler);
 	while (i < FUNCTIONS)
@@ -49,11 +53,10 @@ void	stdin_cmd(int argc, int i, t_ssl_func handler[], bool no_error)
 		str = ft_strjoin("ft_ssl ", str);
 		free(temp);
 		argv = ft_strsplit(str, ' ');
-		stdin_parse_handler(argc, argv, handler, &no_error);
-		no_error == false ? wrong_argument(handler, argv, -1) : 0;
-		ft_printf("FT_SSL> ");
 		free(str);
+		stdin_parse_handler(argc, argv, handler, &no_error);
+		no_error == false ? wrong_argument(handler, argv, -1, true) : 0;
+		ft_printf("FT_SSL> ");
 		clean_array(argv);
 	}
-	str ? free(str) : 0;
 }

@@ -37,7 +37,7 @@ void	init_functions(t_ssl_func handler[FUNCTIONS])
 	handler[6].handler = sha512224;
 }
 
-void	parse_handler(int argc, char **argv)
+int		main(int argc, char **argv)
 {
 	int					i;
 	bool				no_error;
@@ -48,7 +48,7 @@ void	parse_handler(int argc, char **argv)
 	if (argc == 1)
 	{
 		stdin_cmd(0, 0, handler, no_error);
-		return ;
+		return (0);
 	}
 	init_functions(handler);
 	while (i < FUNCTIONS)
@@ -60,12 +60,7 @@ void	parse_handler(int argc, char **argv)
 		}
 		i++;
 	}
-	no_error == false ? wrong_argument(handler, argv, -1) : 0;
-}
-
-int		main(int argc, char **argv)
-{
-	parse_handler(argc, argv);
+	no_error == false ? wrong_argument(handler, argv, -1, false) : 0;
 	system("leaks ft_ssl");
 	return (0);
 }
